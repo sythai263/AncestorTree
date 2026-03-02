@@ -273,6 +273,7 @@ v2.2.0 Documents [##########] Done - Kho tài liệu + In-App Help guide
 v2.2.1 Security  [##########] Done - Security patch + Clan name config + Settings page
 v2.3.0 Privacy   [##########] Done - Xác nhận thành viên + Sub-admin + Privacy controls
 v2.4.0 Profile   [##########] Done - Hồ sơ + MFA + Sao lưu + Docker + Rate limiting
+v2.4.1 BulkAdmin [##########] Done - Bulk actions + Supabase CLI v2.76+ fix
 v3.0.0 Community [----------] Future - Nhà thờ họ, Notifications, Cross-clan
 ```
 
