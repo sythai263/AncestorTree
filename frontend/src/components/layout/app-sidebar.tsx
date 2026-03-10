@@ -8,6 +8,7 @@
 
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -44,6 +45,7 @@ import {
   LogIn,
   UserPlus,
   ChevronUp,
+  ChevronDown,
   ShieldCheck,
   UserCircle,
   Trophy,
@@ -125,6 +127,41 @@ const ELDERLY_NAV_URLS = new Set(['/', '/tree', '/people', '/events', '/help']);
 // Admin items shown in elderly mode (essential only)
 const ELDERLY_ADMIN_URLS = new Set(['/admin', '/admin/users', '/admin/contributions']);
 
+function AdminNavGroup({ pathname, elderlyMode }: { pathname: string; elderlyMode: boolean }) {
+  const isAdminPath = pathname.startsWith('/admin');
+  const [open, setOpen] = useState(isAdminPath);
+
+  const items = adminNavItems.filter((item) => !elderlyMode || ELDERLY_ADMIN_URLS.has(item.url));
+
+  return (
+    <SidebarGroup>
+      <SidebarGroupLabel
+        className="cursor-pointer select-none flex items-center justify-between hover:text-foreground transition-colors"
+        onClick={() => setOpen(!open)}
+      >
+        <span>Quản trị</span>
+        <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+      </SidebarGroupLabel>
+      {open && (
+        <SidebarGroupContent>
+          <SidebarMenu>
+            {items.map((item) => (
+              <SidebarMenuItem key={item.url}>
+                <SidebarMenuButton asChild isActive={item.url === '/admin' ? pathname === '/admin' : pathname.startsWith(item.url)}>
+                  <Link href={item.url}>
+                    <item.icon className="h-4 w-4" />
+                    <span>{item.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroupContent>
+      )}
+    </SidebarGroup>
+  );
+}
+
 export function AppSidebar() {
   const pathname = usePathname();
   const { user, profile, isAdmin, isEditor, signOut } = useAuth();
@@ -197,23 +234,7 @@ export function AppSidebar() {
         )}
 
         {(isAdmin || isEditor) && (
-          <SidebarGroup>
-            <SidebarGroupLabel>Quản trị</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {adminNavItems.filter((item) => !elderlyMode || ELDERLY_ADMIN_URLS.has(item.url)).map((item) => (
-                  <SidebarMenuItem key={item.url}>
-                    <SidebarMenuButton asChild isActive={item.url === '/admin' ? pathname === '/admin' : pathname.startsWith(item.url)}>
-                      <Link href={item.url}>
-                        <item.icon className="h-4 w-4" />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
+          <AdminNavGroup pathname={pathname} elderlyMode={elderlyMode} />
         )}
       </SidebarContent>
 
